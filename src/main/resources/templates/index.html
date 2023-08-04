@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Salário</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 20px;
+        }
+        .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #007bff;
+        }
+        label, input, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="container center">
+    <h1 class="display-4">Calculadora de Salário</h1>
+
+    <div class="form-group">
+        <label for="calculationType">Escolha o tipo de cálculo:</label>
+        <select class="form-control" id="calculationType" name="calculationType">
+            <option value="CLT">CLT</option>
+            <option value="PJ">PJ</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="salary">Digite o salário:</label>
+        <input type="number" class="form-control" id="salary" name="salary" required>
+    </div>
+
+    <div class="form-group" id="discountsInput" style="display: none;">
+        <label for="discounts">Digite o valor dos descontos:</label>
+        <input type="number" class="form-control" id="discounts" name="discounts" required>
+    </div>
+
+    <div class="form-group" id="taxInput" style="display: none;">
+        <label for="tax">Digite o valor da taxa:</label>
+        <input type="number" class="form-control" id="tax" name="tax" required>
+    </div>
+
+    <button class="btn btn-primary mt-2" onclick="calculateSalary()">Calcular</button>
+
+    <div class="result card mt-3" id="result" style="display: none;">
+        <div class="card-body">
+            <h2 class="card-title">Resultado:</h2>
+            <p class="card-text">Salário Líquido: <span id="resultValue"></span></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function showInputs() {
+        var selectedOption = $("#calculationType").val();
+        if (selectedOption === "CLT") {
+            $("#discountsInput").show();
+            $("#taxInput").hide();
+        } else if (selectedOption === "PJ") {
+            $("#discountsInput").show();
+            $("#taxInput").show();
+        }
+    }
+
+    function calculateSalary() {
+        var salary = parseFloat($("#salary").val());
+        var calculationType = $("#calculationType").val();
+        var additionalValue = 0;
+
+        if (calculationType === "CLT") {
+            additionalValue = parseFloat($("#discounts").val());
+        } else if (calculationType === "PJ") {
+            additionalValue = parseFloat($("#tax").val());
+        }
+
+        var salaryDto;
+        if (calculationType === "CLT") {
+            salaryDto = {
+                "salary": salary,
+                "discounts": additionalValue
+            };
+        } else if (calculationType === "PJ") {
+            salaryDto = {
+                "salary": salary,
+                "discounts": additionalValue,
+                "tax": additionalValue
+            };
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/api/calculator" + calculationType,
+            contentType: "application/json",
+            data: JSON.stringify(salaryDto),
+            success: function (result) {
+                $("#resultValue").text(result);
+                $("#result").show();
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                alert("Ocorreu um erro ao calcular o salário. Por favor, tente novamente.");
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        showInputs();
+        $("#calculationType").on("change", showInputs);
+    });
+</script>
+</body>
+</html>
