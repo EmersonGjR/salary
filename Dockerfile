@@ -1,4 +1,4 @@
-FROM openjdk:20
+FROM openjdk:17
 LABEL authors="Emerson"
 #ADD ./salario-0.0.1-SNAPSHOT.jar salario-0.0.1-SNAPSHOT.jar
 COPY ./salario-0.0.1-SNAPSHOT.jar salario-0.0.1-SNAPSHOT.jar
