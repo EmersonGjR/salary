@@ -17,12 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ApiController {
     @Autowired
     AppSerivce appSerivce;
-//    @PostMapping(value = "/calculatorClt", produces = "application/json")
-//    @ResponseBody
-//    public ResponseEntity<String> compute(@RequestBody SalaryDto salaryDto) {
-//        String result = appSerivce.computing(salaryDto);
-//        return ResponseEntity.status(HttpStatus.OK).body(result);
-//    }
     @PostMapping("/calculatorCLT")
     @ResponseBody
     public String compute(@RequestBody SalaryDto salaryDto) {
@@ -33,6 +27,4 @@ public class ApiController {
     public String computePj(@RequestBody SalaryPjDto salaryPjDto) {
         return appSerivce.computingPj(salaryPjDto);
     }
-
-
 }

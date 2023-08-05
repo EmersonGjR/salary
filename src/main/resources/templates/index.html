@@ -57,7 +57,7 @@
     </div>
 
     <div class="form-group" id="taxInput" style="display: none;">
-        <label for="tax">Digite o valor da taxa:</label>
+        <label for="tax">Digite o valor dos impostos:</label>
         <input type="number" class="form-control" id="tax" name="tax" required>
     </div>
 
@@ -83,29 +83,30 @@
             $("#taxInput").show();
         }
     }
-
     function calculateSalary() {
         var salary = parseFloat($("#salary").val());
         var calculationType = $("#calculationType").val();
         var additionalValue = 0;
-
-        if (calculationType === "CLT") {
-            additionalValue = parseFloat($("#discounts").val());
-        } else if (calculationType === "PJ") {
-            additionalValue = parseFloat($("#tax").val());
-        }
-
+        var discounts = $("#discounts").val();
+        var tax = $("#tax").val();
+         discounts != null ? discounts = parseFloat(discounts) : discounts = 0 ;
+         tax != null ? tax = parseFloat(tax) : tax = 0 ;
+        // if (calculationType === "CLT") {
+        //     additionalValue = parseFloat($("#discounts").val());
+        // } else if (calculationType === "PJ") {
+        //     additionalValue = parseFloat($("#tax").val());
+        // }
         var salaryDto;
         if (calculationType === "CLT") {
             salaryDto = {
                 "salary": salary,
-                "discounts": additionalValue
+                "discounts": discounts
             };
         } else if (calculationType === "PJ") {
             salaryDto = {
                 "salary": salary,
-                "discounts": additionalValue,
-                "tax": additionalValue
+                "discounts": discounts,
+                "tax": tax
             };
         }
 

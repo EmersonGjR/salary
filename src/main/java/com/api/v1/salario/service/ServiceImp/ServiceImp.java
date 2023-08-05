@@ -14,16 +14,32 @@ public class ServiceImp implements AppSerivce {
 
     @Override
     public String computing(SalaryDto salaryDto){
+        double discounts = 0;
         Calculus calculus = new Calculus();
         calculus.setSalary(salaryDto.getSalary());
-        double result = calculus.getSalary() - salaryDto.getDiscounts();
+        if(salaryDto.getDiscounts() != null){
+            discounts = salaryDto.getDiscounts();
+        }
+        double result = calculus.getSalary() - discounts;
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
         return decimalFormat.format(result);
     }
     @Override
     public String computingPj(SalaryPjDto salaryPjDto){
-        double result = salaryPjDto.getSalary() - salaryPjDto.getDiscounts() - salaryPjDto.getTax();
+        double salary = salaryPjDto.getSalary();
+        double discounts = 0;
+        double tax = 0;
+        /*double discounts = salaryPjDto.getDiscounts() != null ? salaryPjDto.getDiscounts() : 0;
+        double tax = salaryPjDto.getTax() != null ? salaryPjDto.getTax() : 0;*/
+        if(salaryPjDto.getDiscounts() != null){
+            discounts = salaryPjDto.getDiscounts();
+        }
+        if(salaryPjDto.getTax() != null){
+            tax = salaryPjDto.getTax();
+        }
+
+        double result = salary - discounts - tax;
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
         return decimalFormat.format(result);
