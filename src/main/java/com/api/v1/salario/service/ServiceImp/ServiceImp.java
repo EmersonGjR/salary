@@ -72,7 +72,7 @@ public class ServiceImp implements AppSerivce {
         data.put("salaryB", decimalFormat.format(salaryDto.getSalary()));
         data.put("inss", decimalFormat.format(inss));
         data.put("irrf", decimalFormat.format(calculus.irrfDes(inss, salaryDto.getSalary())));
-        data.put("salary", decimalFormat.format(calculus.getSalary()));
+        data.put("salary", decimalFormat.format(calculus.getSalary() - discounts));
         data.put("discounts", decimalFormat.format(discounts));
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
