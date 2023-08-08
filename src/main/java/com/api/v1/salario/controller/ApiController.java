@@ -4,7 +4,6 @@ import com.api.v1.salario.dto.SalaryDto;
 import com.api.v1.salario.dto.SalaryPjDto;
 import com.api.v1.salario.service.AppSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +18,12 @@ public class ApiController {
     AppSerivce appSerivce;
     @PostMapping("/calculatorCLT")
     @ResponseBody
-    public String compute(@RequestBody SalaryDto salaryDto) {
-            return appSerivce.computing(salaryDto);
+    public ResponseEntity<Object> compute(@RequestBody SalaryDto salaryDto) {
+        return appSerivce.computing(salaryDto);
     }
     @PostMapping("/calculatorPJ")
     @ResponseBody
-    public String computePj(@RequestBody SalaryPjDto salaryPjDto) {
+    public ResponseEntity<Object> computePj(@RequestBody SalaryPjDto salaryPjDto) {
         return appSerivce.computingPj(salaryPjDto);
     }
 }

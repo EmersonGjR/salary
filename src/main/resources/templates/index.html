@@ -10,31 +10,53 @@
             font-family: "Arial", sans-serif;
             background-color: #f0f2f5;
             color: #333;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
         }
-        .center {
+        .blue-bar {
+            background-color: #007bff;
+            height: 20px;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .title {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: calc(100vh - 120px); /* Ajuste o valor para deixar espaço para o cabeçalho e rodapé */
+            padding: 20px;
         }
-        h1 {
-            color: #007bff;
-        }
-        label, input, button {
-            display: block;
-            margin-bottom: 10px;
-        }
-        .result {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #fff;
+        .footer {
+            color: Black;
+            text-align: center;
+            padding: 10px 0;
         }
     </style>
 </head>
 <body>
+<div class="blue-bar top-bar"></div>
+
 <div class="container center">
     <h1 class="display-4">Calculadora de Salário</h1>
 
@@ -47,7 +69,7 @@
     </div>
 
     <div class="form-group">
-        <label for="salary">Digite o salário:</label>
+        <label for="salary">Digite o salário em reais:</label>
         <input type="number" class="form-control" id="salary" name="salary" required>
     </div>
 
@@ -66,9 +88,19 @@
     <div class="result card mt-3" id="result" style="display: none;">
         <div class="card-body">
             <h2 class="card-title">Resultado:</h2>
-            <p class="card-text">Salário Líquido: <span id="resultValue"></span></p>
+            <p class="card-text" id="salaryBTxt">Salário Bruto: $<span id="salaryB"></span></p>
+            <p class="card-text" id="inssTxt">Desconto inss: $<span id="inssValue"></span></p>
+            <p class="card-text" id="irrfTxt">Desconto irrf: $<span id="irrfValue"></span></p>
+            <p class="card-text" id="discountsTxt">Desconto descontos: $<span id="discountsValue"></span></p>
+            <p class="card-text" id="taxTxt">Impostos: $<span id="taxValue"></span></p>
+            <p class="card-text" id="salaryTxt">Salário Líquido: $<span id="resultValue"></span></p>
         </div>
     </div>
+
+    <footer class="footer">
+        <p>© 2023 Emerson Junior</p>
+    </footer>
+    <div class="blue-bar bottom-bar"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -89,13 +121,8 @@
         var additionalValue = 0;
         var discounts = $("#discounts").val();
         var tax = $("#tax").val();
-         discounts != null ? discounts = parseFloat(discounts) : discounts = 0 ;
-         tax != null ? tax = parseFloat(tax) : tax = 0 ;
-        // if (calculationType === "CLT") {
-        //     additionalValue = parseFloat($("#discounts").val());
-        // } else if (calculationType === "PJ") {
-        //     additionalValue = parseFloat($("#tax").val());
-        // }
+         discounts != null ? discounts = parseFloat(discounts) : discounts = 0;
+         tax != null ? tax = parseFloat(tax) : tax = 0;
         var salaryDto;
         if (calculationType === "CLT") {
             salaryDto = {
@@ -109,15 +136,36 @@
                 "tax": tax
             };
         }
-
         $.ajax({
             type: "POST",
             url: "/api/calculator" + calculationType,
             contentType: "application/json",
             data: JSON.stringify(salaryDto),
             success: function (result) {
-                $("#resultValue").text(result);
-                $("#result").show();
+                if(calculationType == "CLT"){
+                    $("#taxTxt").hide();
+                    $("#salaryBTxt").show();
+                    $("#salaryB").text(result.salaryB);
+                    $("#inssTxt").show();
+                    $("#inssValue").text(result.inss);
+                    $("#irrfTxt").show();
+                    $("#irrfValue").text(result.irrf);
+                    $("#discountsTxt").show();
+                    $("#discountsValue").text(result.discounts);
+                    $("#resultTxt").show();
+                    $("#resultValue").text(result.salary);
+                    $("#result").show();
+                }else if(calculationType == "PJ"){
+                    $("#salaryBTxt").show();
+                    $("#salaryB").text(result.salaryB);
+                    $("#taxTxt").show();
+                    $("#taxValue").text(result.tax);
+                    $("#discountsValue").text(result.discounts);
+                    $("#resultValue").text(result.salary);
+                    $("#inssTxt").hide();
+                    $("#irrfTxt").hide();
+                    $("#result").show();
+                }
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
@@ -125,7 +173,6 @@
             }
         });
     }
-
     $(document).ready(function() {
         showInputs();
         $("#calculationType").on("change", showInputs);
