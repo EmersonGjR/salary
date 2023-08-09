@@ -6,6 +6,9 @@ import lombok.Setter;
 public class Calculus {
     @Setter
     private Double salary;
+    public double vt(double valor){
+        return valor * 0.06;
+    }
     public double inssDes(double valor){
         if(valor < 1320.01){
             return valor * 0.075;

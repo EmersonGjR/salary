@@ -7,4 +7,5 @@ public class SalaryPjDto {
     private Double salary;
     private Double discounts;
     private Double tax;
+    private Boolean vt;
 }
