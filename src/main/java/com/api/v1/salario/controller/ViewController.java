@@ -9,4 +9,7 @@ public class ViewController {
     public String showForm() {
         return "index";
     }
+    @GetMapping("/home")
+    public String showHome(){return "home";}
+
 }
