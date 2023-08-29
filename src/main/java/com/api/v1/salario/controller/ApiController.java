@@ -2,6 +2,7 @@ package com.api.v1.salario.controller;
 
 import com.api.v1.salario.dto.SalaryDto;
 import com.api.v1.salario.dto.SalaryPjDto;
+import com.api.v1.salario.dto.SalaryVacDto;
 import com.api.v1.salario.service.AppSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,10 @@ public class ApiController {
     @ResponseBody
     public ResponseEntity<Object> computePj(@RequestBody SalaryPjDto salaryPjDto) {
         return appSerivce.computingPj(salaryPjDto);
+    }
+    @PostMapping("/calculatorVAC")
+    @ResponseBody
+    public ResponseEntity<Object> computeVac(@RequestBody SalaryVacDto salaryVacDto){
+        return appSerivce.computingVacation(salaryVacDto);
     }
 }

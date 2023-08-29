@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Salário</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        nav {
+            background-color: #007bff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border: 1px solid white;
+            border-radius: 5px;
+        }
+
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 0;
+            margin: 0;
+        }
+        .blue-bar {
+            background-color: #007bff;
+            height: 20px;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .title {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 120px); /* Ajuste o valor para deixar espaço para o cabeçalho e rodapé */
+            padding: 20px;
+        }
+        .footer {
+            color: Black;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <nav>
+        <ul>
+            <li><a href="home.html">Página Inicial</a></li>
+            <li><a href="index.html">Cálculo de Descontos</a></li>
+            <li><a href="about.html">Sobre</a></li>
+            
+        </ul>
+    </nav>
+    
+
+    <footer class="footer">
+        <p>© 2023 Emerson Junior</p>
+    </footer>
+    <div class="blue-bar bottom-bar"></div>
+</body>
+</html>

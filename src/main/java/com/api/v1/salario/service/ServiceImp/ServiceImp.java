@@ -2,6 +2,7 @@ package com.api.v1.salario.service.ServiceImp;
 
 import com.api.v1.salario.dto.SalaryDto;
 import com.api.v1.salario.dto.SalaryPjDto;
+import com.api.v1.salario.dto.SalaryVacDto;
 import com.api.v1.salario.service.AppSerivce;
 import com.api.v1.salario.service.Calculus;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,22 @@ public class ServiceImp implements AppSerivce {
             data.put("salary", decimalFormat.format(salaryDto.getSalary() - irrf - inss - discounts - vt));
         }
         data.put("discounts", decimalFormat.format(discounts));
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    @Override
+    public ResponseEntity<Object> computingVacation(SalaryVacDto salaryVacDto){
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+        Map<String, String> data = new HashMap<>();
+        Calculus calculus = new Calculus();
+        double oneThree = salaryVacDto.getSalary() + (salaryVacDto.getSalary() * 0.33);
+        double inss = calculus.inssDes(oneThree);
+        double irrf = calculus.irrfDes(inss, oneThree);
+        data.put("salaryB", decimalFormat.format(salaryVacDto.getSalary()));
+        data.put("oneThree", decimalFormat.format(oneThree));
+        data.put("irrf", decimalFormat.format(irrf));
+        data.put("inss", decimalFormat.format(inss));
+        data.put("salary", decimalFormat.format(oneThree - inss - irrf));
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 }
