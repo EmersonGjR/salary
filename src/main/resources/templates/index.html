@@ -84,9 +84,9 @@
 
     <nav>
         <ul>
-            <li><a href="home.html">Página Inicial</a></li>
-            <li><a href="index.html">Cálculo de Descontos</a></li>
-            <li><a href="about.html">Sobre</a></li>
+            <li><a href="/home">Página Inicial</a></li>
+            <li><a href="/">Cálculo de Descontos</a></li>
+<!--            <li><a href="about.html">Sobre</a></li>-->
             
         </ul>
     </nav>
@@ -100,12 +100,29 @@
             <option value="CLT">CLT</option>
             <option value="PJ">PJ</option>
             <option value="VAC">Férias</option>
+            <option value="REC">Rescisão</option>
         </select>
     </div>
 
     <div class="form-group">
         <label for="salary">Digite o salário em reais:</label>
         <input type="number" class="form-control" id="salary" name="salary" required>
+    </div>
+    <div class="form-group" id="diasShow">
+        <label for="salary">Digite os dias de férias: </label>
+        <input type="number" class="form-control" id="dias" name="salary" required>
+    </div>
+    <div class="form-group" id="diasTrShow">
+        <label for="salary">Digite os dias trabalhados no mês: </label>
+        <input type="number" class="form-control" id="diasTr" name="salary" required>
+    </div>
+    <div class="form-group" id="inicioShow">
+        <label for="salary">Inicio: </label>
+        <input type="date" class="form-control" id="inicio" name="inicio" required>
+    </div>
+    <div class="form-group" id="fimShow">
+        <label for="salary">Fim: </label>
+        <input type="date" class="form-control" id="FIM" name="FIM" required>
     </div>
     <div class="form-group" id="vtShow" >
         <label for="vtValue">Vale Transporte:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -136,8 +153,9 @@
         <div class="card-body">
             <h2 class="card-title">Resultado:</h2>
             <p class="card-text" id="salaryBTxt">Salário Bruto: $<span id="salaryB"></span></p>
+            <p class="card-text" id="diasTxt">Dias férias: $<span id="diasValue"></span></p>
             <p class="card-text" id="ValeTxt">Vale transporte: $<span id="ValeValue"></span></p>
-            <p class="card-text" id="oneThreeTxt">Um terço salario bruto: $<span id="oneThreeValue"></span></p>
+            <p class="card-text" id="oneThreeTxt">Um dia: $<span id="oneThreeValue"></span></p>
             <p class="card-text" id="inssTxt">Desconto inss: $<span id="inssValue"></span></p>
             <p class="card-text" id="irrfTxt">Desconto irrf: $<span id="irrfValue"></span></p>
             <p class="card-text" id="discountsTxt">Descontos: $<span id="discountsValue"></span></p>
@@ -162,24 +180,56 @@
             $("#irShow").show();
             $("#insShow").show();
             $("#taxInput").hide();
+            $("#diasShow").hide();
+            $("#diasTrShow").hide();
+            $("#inicioShow").hide();
+            $("#fimShow").hide();
         }else if (selectedOption === "PJ"){
             $("#irShow").hide();
             $("#insShow").hide();
+            $("#diasShow").hide();
+            $("#diasTrShow").hide();
             $("#vtShow").show();
             $("#discountsInput").show();
             $("#taxInput").show();
+            $("#inicioShow").hide();
+            $("#fimShow").hide();
         }else if (selectedOption == "VAC"){
+            $("#irShow").hide();
+            $("#insShow").hide();
+            $("#taxInput").hide();
+            $("#discountsInput").hide();
+            $("#diasTrShow").hide();
+            $("#vtShow").hide();
+            $("#salary").show();
+            $("#diasShow").show();
+            $("#inicioShow").hide();
+            $("#fimShow").hide();
+        }else if (selectedOption == "REC"){
             $("#irShow").hide();
             $("#insShow").hide();
             $("#taxInput").hide();
             $("#discountsInput").hide();
             $("#vtShow").hide();
             $("#salary").show();
+            $("#diasShow").hide();
+            $("#inicioShow").show();
+            $("#fimShow").show();
+            $("#diasTrShow").show();
         }
-
     }
     function calculateSalary() {
+        var daysTr = parseFloat($("#diasTr").val());
+        var inicioDate = new Date($("#inicio").val());
+        var FIMDate = new Date($("#FIM").val());
+        if (isNaN(inicioDate.getTime()) || isNaN(FIMDate.getTime())) {
+            alert("Por favor, insira datas válidas.");
+            return;
+        }
+        var diffMillis = FIMDate - inicioDate;
+        var diffDias = Math.ceil(diffMillis / (1000 * 60 * 60 * 24));
         var salary = parseFloat($("#salary").val());
+        var days = parseFloat($("#dias").val());
         var calculationType = $("#calculationType").val();
         var additionalValue = 0;
         var discounts = $("#discounts").val();
@@ -190,7 +240,7 @@
         var ir = $("#irValue").prop("checked");
         var inss = $("#insValue").prop("checked");
         var salaryDto;
-        if (calculationType === "CLT") {
+        if(calculationType === "CLT"){
             salaryDto = {
                 "salary": salary,
                 "discounts": discounts,
@@ -198,16 +248,23 @@
                 "irrf": ir,
                 "inss": inss
             };
-        } else if (calculationType === "PJ") {
+        }else if(calculationType === "PJ") {
             salaryDto = {
                 "salary": salary,
                 "discounts": discounts,
                 "tax": tax,
                 "vt" : vtChecked,
             };
-        }else if (calculationType === "VAC"){
+        }else if(calculationType === "VAC"){
             salaryDto = {
-                "salary": salary
+                "salary": salary,
+                "days": days
+            };
+        }else if(calculationType === "REC"){
+            salaryDto = {
+                "salary": salary,
+                "diffDays": diffDias,
+                "days": daysTr
             };
         }
         $.ajax({
@@ -231,6 +288,7 @@
                     $("#resultTxt").show();
                     $("#resultValue").text(result.salary);
                     $("#result").show();
+                    $("#diasTxt").hide();
                     $("#oneThreeTxt").hide();
                 }else if(calculationType == "PJ"){
                     $("#salaryBTxt").show();
@@ -244,6 +302,7 @@
                     $("#inssTxt").hide();
                     $("#irrfTxt").hide();
                     $("#oneThreeTxt").hide();
+                    $("#diasTxt").hide();
                     $("#result").show();
                 }else if(calculationType == "VAC"){
                     $("#taxTxt").hide();
@@ -251,12 +310,26 @@
                     $("#ValeTxt").hide();
                     $("#salaryBTxt").show();
                     $("#salaryB").text(result.salaryB);
+                    $("#diasTxt").show();
+                    $("#diasValue").text(result.dias);
                     $("#oneThreeTxt").show();
-                    $("#oneThreeValue").text(result.oneThree);
+                    $("#oneThreeValue").text(result.oneD);
                     $("#irrfTxt").show();
                     $("#irrfValue").text(result.irrf);
                     $("#inssTxt").show();
                     $("#inssValue").text(result.inss);
+                    $("#result").show();
+                    $("#resultValue").text(result.salary);
+                }else if(calculationType == "REC"){
+                    $("#taxTxt").hide();
+                    $("#discountsTxt").hide();
+                    $("#ValeTxt").hide();
+                    $("#salaryBTxt").show();
+                    $("#salaryB").text(result.salaryB);
+                    $("#diasTxt").hide();
+                    $("#oneThreeTxt").hide();
+                    $("#irrfTxt").hide();
+                    $("#inssTxt").hide();
                     $("#result").show();
                     $("#resultValue").text(result.salary);
                 }

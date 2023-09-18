@@ -1,6 +1,7 @@
 package com.api.v1.salario.service.ServiceImp;
 
 import com.api.v1.salario.dto.SalaryDto;
+import com.api.v1.salario.dto.SalaryDtoRec;
 import com.api.v1.salario.dto.SalaryPjDto;
 import com.api.v1.salario.dto.SalaryVacDto;
 import com.api.v1.salario.service.AppSerivce;
@@ -8,6 +9,7 @@ import com.api.v1.salario.service.Calculus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -15,6 +17,18 @@ import java.util.Map;
 
 @Service
 public class ServiceImp implements AppSerivce {
+    @Override
+    public ResponseEntity<Object> computingRec(SalaryDtoRec salaryDtoRec){
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        decimalFormat.setRoundingMode(RoundingMode.DOWN);
+        Map<String, String> data = new HashMap<>();
+        double saldo = (salaryDtoRec.salary / 30 ) * salaryDtoRec.days;
+        double meses = salaryDtoRec.diffDays / 30;
+        double salary = saldo + (salaryDtoRec.salary / 12) * meses;
+        data.put("salaryB", decimalFormat.format(salaryDtoRec.salary));
+        data.put("salary", decimalFormat.format(salary));
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
     @Override
     public ResponseEntity<Object> computingPj(SalaryPjDto salaryPjDto){
         DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
@@ -67,14 +81,18 @@ public class ServiceImp implements AppSerivce {
         decimalFormat.setRoundingMode(RoundingMode.DOWN);
         Map<String, String> data = new HashMap<>();
         Calculus calculus = new Calculus();
-        double oneThree = salaryVacDto.getSalary() + (salaryVacDto.getSalary() * 0.33);
+        double oneThree = salaryVacDto.getSalary() / 30;
         double inss = calculus.inssDes(oneThree);
         double irrf = calculus.irrfDes(inss, oneThree);
+        double salaryDay = oneThree * salaryVacDto.getDays();
+        double umterco = salaryDay / 3;
+        double salary = umterco + salaryDay;
         data.put("salaryB", decimalFormat.format(salaryVacDto.getSalary()));
-        data.put("oneThree", decimalFormat.format(oneThree));
+        data.put("dias", decimalFormat.format(salaryVacDto.getDays()));
+        data.put("oneD", decimalFormat.format(oneThree));
         data.put("irrf", decimalFormat.format(irrf));
         data.put("inss", decimalFormat.format(inss));
-        data.put("salary", decimalFormat.format(oneThree - inss - irrf));
+        data.put("salary", decimalFormat.format(salary - inss - irrf));
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 }

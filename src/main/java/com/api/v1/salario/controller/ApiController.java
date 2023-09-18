@@ -1,6 +1,7 @@
 package com.api.v1.salario.controller;
 
 import com.api.v1.salario.dto.SalaryDto;
+import com.api.v1.salario.dto.SalaryDtoRec;
 import com.api.v1.salario.dto.SalaryPjDto;
 import com.api.v1.salario.dto.SalaryVacDto;
 import com.api.v1.salario.service.AppSerivce;
@@ -31,5 +32,10 @@ public class ApiController {
     @ResponseBody
     public ResponseEntity<Object> computeVac(@RequestBody SalaryVacDto salaryVacDto){
         return appSerivce.computingVacation(salaryVacDto);
+    }
+    @PostMapping("/calculatorREC")
+    @ResponseBody
+    public ResponseEntity<Object> computeRec(@RequestBody SalaryDtoRec salaryDtoRec){
+        return appSerivce.computingRec(salaryDtoRec);
     }
 }

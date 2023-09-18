@@ -11,5 +11,4 @@ public class ViewController {
     }
     @GetMapping("/home")
     public String showHome(){return "home";}
-
 }
